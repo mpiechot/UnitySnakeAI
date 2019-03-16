@@ -6,7 +6,7 @@ using UnityEngine;
 public class AlphaBetaPlayer : MonoBehaviour,Actor
 {
     private Direction dir;
-    private const int DEPTH = 4;
+    private const int DEPTH = 8;
     private GameState actualState;
 
     //MaxPlayer Vars
@@ -122,6 +122,13 @@ public class AlphaBetaPlayer : MonoBehaviour,Actor
         Snake s = getMySnake();
         int xSnake = s.getPositions()[0].X;
         int ySnake = s.getPositions()[0].Y;
+
+        Snake enemy = getEnemySnake();
+        if(getPossibleDirections(enemy.getID()).Count == 0)
+        {
+            score += 100;
+        }
+       // score += (s.getPositions().Count - enemy.getPositions().Count) * 100;
 
         if(mySnakeApple)
         {

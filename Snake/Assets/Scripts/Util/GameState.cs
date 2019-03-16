@@ -116,11 +116,22 @@ namespace Assets.Scripts.Util
                 Snake copy = new Snake(s);
                 if (s.getID() == id)
                 {
-                    copy.Move(dir);
+                    if (moveIsValid(copy, dir)){
+                        copy.Move(dir);
+                    }
+                    else
+                    {
+                        copy.Die();
+                    }
                 }
                 movedSnakes.Add(copy);
             }
             return movedSnakes;
+        }
+        private bool moveIsValid(Snake snake, Direction dir)
+        {
+            Koordinate newPos = snake.getMovedPos(dir);
+            return gameField[newPos.X, newPos.Y] == 0 || gameField[newPos.X, newPos.Y] == 2;
         }
         
         public List<Snake> getSnakes()

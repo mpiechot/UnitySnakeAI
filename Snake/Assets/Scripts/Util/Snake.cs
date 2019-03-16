@@ -46,6 +46,32 @@ namespace Assets.Scripts.Util
             Koordinate koord = new Koordinate(positions.Last<Koordinate>().X, positions.Last<Koordinate>().Y);
             positions.Add(koord);
         }
+        public void Die()
+        {
+            Koordinate head = positions[0];
+            positions.Clear();
+            positions.Add(head);
+        }
+        public Koordinate getMovedPos(Direction dir)
+        {
+            Koordinate newPos = new Koordinate(positions.First<Koordinate>().X, positions.First<Koordinate>().Y);
+            switch (dir)
+            {
+                case Direction.UP:
+                    newPos.Y++;
+                    break;
+                case Direction.DOWN:
+                    newPos.Y--;
+                    break;
+                case Direction.LEFT:
+                    newPos.X--;
+                    break;
+                case Direction.RIGHT:
+                    newPos.X++;
+                    break;
+            }
+            return newPos;
+        }
         public void Move(Direction dir)
         {
             Koordinate newPos = new Koordinate(positions.First<Koordinate>().X, positions.First<Koordinate>().Y);
