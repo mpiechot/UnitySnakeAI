@@ -13,6 +13,8 @@ public class GameMaster : MonoBehaviour
 
     public int width { get; set; }
     public int height { get; set; }
+    public byte playersTurn { get; set; }
+    public float UpdatePeriod = 0.1f;
 
     public Apple apple;
 
@@ -31,8 +33,9 @@ public class GameMaster : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach(Player player in players)
+        foreach (Player player in players)
         {
+            playersTurn = player.id;
             player.UpdatePlayer();
         }
     }
@@ -68,8 +71,8 @@ public class GameMaster : MonoBehaviour
 
     private void CreateApple()
     {
-        int x = (int)Random.Range(-(width / 2), width / 2);
-        int y = (int)Random.Range(-(height / 2), height / 2);
+        int x = (int)Random.Range(1, width-1);
+        int y = (int)Random.Range(1, height-1);
         apple = Instantiate(apple, new Vector3(x, y), Quaternion.identity).GetComponent<Apple>();
         apple.name = "Apple";
     }
@@ -78,19 +81,20 @@ public class GameMaster : MonoBehaviour
         byte id = 100;
         foreach(GameObject player in playerPrefabs)
         {
-            int x = (int)Random.Range(-(width / 2), width / 2);
-            int y = (int)Random.Range(-(height / 2), height / 2);
+            int x = (int)Random.Range(1, width-1);
+            int y = (int)Random.Range(1, height-1);
             Player playerInst = Instantiate(player, new Vector3(x, y), Quaternion.identity).GetComponent<Player>();
             playerInst.name = player.name;
             playerInst.id = id++;
+            playerInst.gameObject.GetComponent<Renderer>().material.color = new Color(Random.value, Random.value, Random.value);
             players.Add(playerInst);
         }
     }
     private void Respawn(Player player)
     {
         player.Die();
-        int x = (int)Random.Range(-(width / 2), width / 2);
-        int y = (int)Random.Range(-(height / 2), height / 2);
+        int x = (int)Random.Range(0, width);
+        int y = (int)Random.Range(0, height);
         player.transform.position = new Vector3(x,y);
     }
 }

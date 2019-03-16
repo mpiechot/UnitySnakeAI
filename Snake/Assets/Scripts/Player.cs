@@ -25,7 +25,7 @@ public class Player : MonoBehaviour
 
     //Movement
     public Direction direction;
-    public float UpdatePeriod = 0.1f;
+    
     private float delayTime = 0.0f;
     private Vector3 moveVector;
 
@@ -33,6 +33,7 @@ public class Player : MonoBehaviour
     public GameObject bodyPartPrefab;
     private List<BodyPart> parts;
     public int length;
+    private Color partColor;
 
 
     // Start is called before the first frame update
@@ -41,6 +42,7 @@ public class Player : MonoBehaviour
         parts = new List<BodyPart>();
         gm = GameMaster.GetInstance();
         actor = GetComponent<Actor>();
+        partColor = new Color(Random.value, Random.value, Random.value);
     }
 
     // Update is called once per frame
@@ -49,7 +51,7 @@ public class Player : MonoBehaviour
         direction = actor.NextMove();
         if(Time.time > delayTime)
         {
-            delayTime += UpdatePeriod;
+            delayTime += gm.UpdatePeriod;
             Move();
             UpdateBodyParts();
         }
@@ -58,19 +60,14 @@ public class Player : MonoBehaviour
     {
         for(int i = 0; i < amount; i++)
         {
-            if(parts.Count == 0)
+            BodyPart part = Instantiate(bodyPartPrefab, transform.position, Quaternion.identity).GetComponent<BodyPart>();
+            if(parts.Count != 0)
             {
-                BodyPart part = Instantiate(bodyPartPrefab, transform.position, Quaternion.identity).GetComponent<BodyPart>();
-                part.moveVector = Vector3.zero;
-                parts.Add(part);
+                part.transform.position = parts[parts.Count - 1].transform.position;
             }
-            else
-            {
-                BodyPart part = Instantiate(bodyPartPrefab, parts[parts.Count - 1].transform.position, Quaternion.identity).GetComponent<BodyPart>();
-                part.moveVector = Vector3.zero;
-                parts.Add(part);
-            }
-
+            part.moveVector = Vector3.zero;
+            parts.Add(part);
+            part.gameObject.GetComponent<Renderer>().material.color = partColor;
         }
         length = parts.Count;
     }
@@ -85,7 +82,6 @@ public class Player : MonoBehaviour
 
     void OnTriggerEnter(Collider col)
     {
-        Debug.Log("Collision: " + col.tag);
         gm.handleCollision(this, col);
     }
     public List<BodyPart> getParts()
